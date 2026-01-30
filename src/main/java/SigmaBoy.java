@@ -8,7 +8,7 @@ public class SigmaBoy {
         System.out.println(HI);
 
         Scanner scanner = new Scanner(System.in);
-        String[] inputs = new String[100];
+        Task[] tasks = new Task[100];
         int count = 0;
 
         while(true) {
@@ -27,16 +27,47 @@ public class SigmaBoy {
                     } else if (userinput.equals("list")) {
                         if (count > 0) {
                             for (int i = 0; i < count; i++) {
-                                System.out.println(i + 1 + ". " + inputs[i]);
+                                System.out.println(i + 1 + ". " + tasks[i]);
                             }
                         } else {
 
                             System.out.println("No items in list yet\n");
                         }
+                    } else if (userinput.startsWith("mark ")) {
+                        try {
+                            String num = userinput.substring(5).trim();
+                            int taskNum = Integer.parseInt(num);
+
+                            if (taskNum >= 1 && taskNum <= count) {
+                                Task taskToMark = tasks[taskNum - 1];
+                                taskToMark.markAsDone();
+                                System.out.println("Nice! I've marked this task as done: \n" + taskToMark);
+                            } else {
+                                System.out.println("Out of range, choose another index\n");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Oi dont troll, choose an appropriate index\n");
+                        }
+                    } else if (userinput.startsWith("unmark ")) {
+                        try {
+                            String num = userinput.substring(7).trim();
+                            int taskNum = Integer.parseInt(num);
+
+                            if (taskNum >= 1 && taskNum <= count) {
+                                Task taskToMark = tasks[taskNum - 1];
+                                taskToMark.markAsNotDone();
+                                System.out.println("Ok! I've marked this task as not done yet: \n" + taskToMark);
+                            } else {
+                                System.out.println("Out of range, choose another index\n");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Oi dont troll, choose an appropriate index\n");
+                        }
                     } else {
-                        inputs[count] = userinput;
+                        Task t = new Task(userinput);
+                        tasks[count] = t;
                         count++;
-                        System.out.println("added: " + userinput);
+                        System.out.println("added: " + t);
                     }
                     System.out.println(LINE);
                 }
