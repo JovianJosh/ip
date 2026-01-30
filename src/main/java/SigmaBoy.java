@@ -8,18 +8,38 @@ public class SigmaBoy {
         System.out.println(HI);
 
         Scanner scanner = new Scanner(System.in);
+        String[] inputs = new String[100];
+        int count = 0;
 
         while(true) {
             String userinput = scanner.nextLine();
-
-            System.out.println(LINE);
-            if (userinput.equals("bye")) {
-                System.out.println(BYE);
-                System.out.println(LINE);
-                break;
+            if (userinput.isBlank()) {
+                System.out.println(LINE + "Oi dont troll\n" + LINE);
             } else {
-                System.out.println(userinput);
-                System.out.println(LINE);
+                if (count >= 100) {
+                    System.out.println("Storage is full, terminating\n");
+                    break;
+                } else {
+                    System.out.println(LINE);
+                    if (userinput.equals("bye")) {
+                        System.out.println(BYE + LINE);
+                        break;
+                    } else if (userinput.equals("list")) {
+                        if (count > 0) {
+                            for (int i = 0; i < count; i++) {
+                                System.out.println(i + 1 + ". " + inputs[i]);
+                            }
+                        } else {
+
+                            System.out.println("No items in list yet\n");
+                        }
+                    } else {
+                        inputs[count] = userinput;
+                        count++;
+                        System.out.println("added: " + userinput);
+                    }
+                    System.out.println(LINE);
+                }
             }
         }
         scanner.close();
