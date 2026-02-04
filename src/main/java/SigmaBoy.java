@@ -63,12 +63,73 @@ public class SigmaBoy {
                         } catch (NumberFormatException e) {
                             System.out.println("Oi dont troll, choose an appropriate index\n");
                         }
-                    } else {
-                        Task t = new Task(userinput);
-                        tasks[count] = t;
-                        count++;
-                        System.out.println("added: " + t);
+                    } else if (userinput.startsWith("todo ")) {
+                        String description = userinput.substring(5).trim();
+                        Todo todo = new Todo(description);
+                        if (!description.isEmpty()) {
+                            tasks[count] = todo;
+                            count++;
+                            System.out.println("Got it. I've added this task:");
+                            System.out.println(" " + todo);
+                            System.out.println("Now you have " + count + " tasks in the list.");
+                        } else {
+                            System.out.println("Please input a description");
+                        }
+                    } else if (userinput.startsWith("deadline ")) {
+                        String rest = userinput.substring(9).trim();
+                        boolean isValid = true;
+
+                        String[] parts = rest.split(" /by ");
+                        if (parts.length != 2){
+                            System.out.println("Wrong format!, the correct format is deadline {description} /by {time}");
+                            isValid = false;
+                        }
+
+                        if (isValid) {
+                            if (!parts[0].isEmpty() && !parts[1].isEmpty()) {
+                                String description = parts[0].trim();
+                                String by = parts[1].trim();
+
+                                Deadline deadline = new Deadline(description, by);
+                                tasks[count] = deadline;
+                                count++;
+                                System.out.println("Got it. I've added this task:");
+                                System.out.println(" " + deadline);
+                                System.out.println("Now you have " + count + " tasks in the list.");
+                            } else {
+                                System.out.println("Cannot have empty statements!");
+                            }
+                        }
+
+                    } else if (userinput.startsWith("event ")) {
+                        String rest = userinput.substring(6).trim();
+                        boolean isValid = true;
+
+                        String[] parts = rest.split(" /from | /to ");
+                        if (parts.length != 3){
+                            System.out.println("Wrong format! the correct format is event {description} /from {from} /to {to}");
+                            isValid = false;
+                        }
+
+                        if (isValid) {
+                            if (!parts[2].isEmpty() && !parts[1].isEmpty() && !parts[0].isEmpty()) {
+                                String description = parts[0].trim();
+                                String from = parts[1].trim();
+                                String to = parts[2].trim();
+
+                                Event event = new Event(description, from, to);
+                                tasks[count] = event;
+                                count++;
+                                System.out.println("Got it. I've added this task:");
+                                System.out.println(" " + event);
+                                System.out.println("Now you have " + count + " tasks in the list.");
+
+                            } else {
+                                System.out.println("Cannot have empty statements!");
+                            }
+                        }
                     }
+
                     System.out.println(LINE);
                 }
             }
