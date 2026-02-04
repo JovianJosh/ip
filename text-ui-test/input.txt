@@ -1,0 +1,26 @@
+
+list
+todo
+todo read book
+todo exercise
+list
+mark 1
+mark 3
+mark 99
+mark abc
+unmark 1
+unmark 2
+unmark 100
+unmark xyz
+deadline
+deadline submit assignment
+deadline submit assignment /by
+deadline submit assignment /by Friday
+event
+event team meeting
+event team meeting /from
+event team meeting /from 2pm
+event team meeting /from 2pm /to
+event team meeting /from 2pm /to 4pm
+list
+bye
