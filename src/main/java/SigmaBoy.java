@@ -12,11 +12,11 @@ public class SigmaBoy {
             "Bye. Hope to see you again soon!";
 
     private static final int MAX_TASKS = 100;
-    private static final int MARK_PREFIX = 5;
-    private static final int UNMARK_PREFIX = 7;
-    private static final int TODO_PREFIX = 5;
-    private static final int DEADLINE_PREFIX = 9;
-    private static final int EVENT_PREFIX = 6;
+    private static final int MARK_PREFIX = 4;
+    private static final int UNMARK_PREFIX = 6;
+    private static final int TODO_PREFIX = 4;
+    private static final int DEADLINE_PREFIX = 8;
+    private static final int EVENT_PREFIX = 5;
 
     private static final String EVENT_FORMAT_ERROR =
             "Wrong format! the correct format is event {description} /from {from} /to {to}";
@@ -98,15 +98,15 @@ public class SigmaBoy {
             }
 
             //Mark and Unmark
-            if (userInput.startsWith("mark ") || userInput.startsWith("unmark ")) {
-                boolean isMark = userInput.startsWith("mark ");
+            if (userInput.startsWith("mark") || userInput.startsWith("unmark")) {
+                boolean isMark = userInput.startsWith("mark");
                 int prefixLength = isMark ? MARK_PREFIX : UNMARK_PREFIX;
 
                 try {
                     int taskNum = Integer.parseInt(userInput.substring(prefixLength).trim());
 
                     if (taskNum < 1 || taskNum > count) {
-                        printWithLine(OUT_OF_RANGE_ERROR);
+                        throw new SigmaBoyException(OUT_OF_RANGE_ERROR);
                     } else {
                         Task taskToMark = tasks[taskNum - 1];
                         if (isMark) {
@@ -116,65 +116,83 @@ public class SigmaBoy {
                         }
                         printMarkStatus(taskToMark, isMark);
                     }
-                } catch (NumberFormatException e) {
+                } catch(NumberFormatException e) {
                     printWithLine(INVALID_INDEX_ERROR);
+                } catch (SigmaBoyException e) {
+                    printWithLine(e.getMessage());
                 }
                 continue;
             }
 
             //Todo
-            if (userInput.startsWith("todo ")) {
-                String description = userInput.substring(TODO_PREFIX).trim();
-                if (description.isEmpty()) {
-                    printWithLine(EMPTY_STATEMENT_ERROR);
-                } else {
+            if (userInput.startsWith("todo")) {
+                try {
+                    String description = userInput.substring(TODO_PREFIX).trim();
+
+                    if (description.isEmpty()) {
+                        throw new SigmaBoyException(EMPTY_STATEMENT_ERROR);
+                    }
+
                     Todo todo = new Todo(description);
                     tasks[count++] = todo;
                     printAddedTask(todo, count);
+
+                } catch(SigmaBoyException e) {
+                    printWithLine(e.getMessage());
                 }
                 continue;
             }
 
             //Deadline
-            if (userInput.startsWith("deadline ")) {
-                String rest = userInput.substring(DEADLINE_PREFIX).trim();
-                String[] parts = rest.split(" /by ");
+            if (userInput.startsWith("deadline")) {
+                try {
+                    String rest = userInput.substring(DEADLINE_PREFIX).trim();
+                    String[] parts = rest.split(" /by ");
 
-                if (parts.length != 2) {
-                    printWithLine(DEADLINE_FORMAT_ERROR);
-                    continue;
+                    if (parts.length != 2) {
+                        throw new SigmaBoyException(DEADLINE_FORMAT_ERROR);
+                    }
+
+                    if (parts[0].isEmpty() || parts[1].isEmpty()) {
+                        throw new SigmaBoyException(EMPTY_STATEMENT_ERROR);
+                    }
+
+                    Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
+                    tasks[count++] = deadline;
+                    printAddedTask(deadline, count);
+
+                } catch (SigmaBoyException e) {
+                    printWithLine(e.getMessage());
                 }
-
-                if (parts[0].isEmpty() || parts[1].isEmpty()) {
-                    printWithLine(EMPTY_STATEMENT_ERROR);
-                    continue;
-                }
-
-                Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
-                tasks[count++] = deadline;
-                printAddedTask(deadline, count);
                 continue;
             }
 
             //Event
-            if (userInput.startsWith("event ")) {
-                String rest = userInput.substring(EVENT_PREFIX).trim();
-                String[] parts = rest.split(" /from | /to ");
+            if (userInput.startsWith("event")) {
+                try {
+                    String rest = userInput.substring(EVENT_PREFIX).trim();
+                    String[] parts = rest.split(" /from | /to ");
 
-                if (parts.length != 3) {
-                    printWithLine(EVENT_FORMAT_ERROR);
+                    if (parts.length != 3) {
+                        throw new SigmaBoyException(EVENT_FORMAT_ERROR);
+                    }
+
+                    if (parts[0].isEmpty() || parts[1].isEmpty() || parts[2].isEmpty()) {
+                        throw new SigmaBoyException(EMPTY_STATEMENT_ERROR);
+                    }
+
+                    Event event = new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
+                    tasks[count++] = event;
+                    printAddedTask(event, count);
                     continue;
-                }
 
-                if (parts[0].isEmpty() || parts[1].isEmpty() || parts[2].isEmpty()) {
-                    printWithLine(EMPTY_STATEMENT_ERROR);
-                    continue;
+                } catch (SigmaBoyException e) {
+                    printWithLine(e.getMessage());
                 }
-
-                Event event = new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
-                tasks[count++] = event;
-                printAddedTask(event, count);
             }
+
+            String firstWord = userInput.split(" ")[0];
+            printWithLine("Unknown command: " + firstWord);
         }
 
         scanner.close();
