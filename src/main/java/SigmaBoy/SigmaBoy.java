@@ -1,3 +1,7 @@
+package SigmaBoy;
+
+import SigmaBoy.task.*;
+
 import java.util.Scanner;
 
 public class SigmaBoy {
@@ -124,7 +128,7 @@ public class SigmaBoy {
                 continue;
             }
 
-            //Todo
+            //sigmaboy.task.Todo
             if (userInput.startsWith("todo")) {
                 try {
                     String description = userInput.substring(TODO_PREFIX).trim();
@@ -143,7 +147,7 @@ public class SigmaBoy {
                 continue;
             }
 
-            //Deadline
+            //sigmaboy.task.Deadline
             if (userInput.startsWith("deadline")) {
                 try {
                     String rest = userInput.substring(DEADLINE_PREFIX).trim();
@@ -167,7 +171,7 @@ public class SigmaBoy {
                 continue;
             }
 
-            //Event
+            //sigmaboy.task.Event
             if (userInput.startsWith("event")) {
                 try {
                     String rest = userInput.substring(EVENT_PREFIX).trim();
@@ -189,6 +193,7 @@ public class SigmaBoy {
                 } catch (SigmaBoyException e) {
                     printWithLine(e.getMessage());
                 }
+                continue;
             }
 
             String firstWord = userInput.split(" ")[0];

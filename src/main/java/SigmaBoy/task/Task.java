@@ -1,3 +1,5 @@
+package SigmaBoy.task;
+
 public class Task {
     protected String description;
     protected boolean isDone;
