@@ -3,6 +3,7 @@ package SigmaBoy;
 import SigmaBoy.task.*;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class SigmaBoy {
     //Constants
@@ -21,6 +22,7 @@ public class SigmaBoy {
     private static final int TODO_PREFIX = 4;
     private static final int DEADLINE_PREFIX = 8;
     private static final int EVENT_PREFIX = 5;
+    private static final int DELETE_PREFIX = 6;
 
     private static final String EVENT_FORMAT_ERROR =
             "Wrong format! the correct format is event {description} /from {from} /to {to}";
@@ -53,6 +55,13 @@ public class SigmaBoy {
         );
     }
 
+    private static void printDeleteTask(Task task, int count) {
+        printWithLine(
+                "Noted. Ive removed this task:\n" + task +
+                "\nNow you have " + count + " tasks in the list."
+        );
+    }
+
     private static void printMarkStatus(Task task, boolean done) {
         if (done) {
             printWithLine("Nice! I've marked this task as done:\n" + task);
@@ -61,26 +70,21 @@ public class SigmaBoy {
         }
     }
 
-    // ================= Main Program =================
+    //Main
     public static void main(String[] args) {
         printLine();
         printWithLine(HI);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_TASKS];
-        int count = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
 
+            //Blank input
             if (userInput.isBlank()) {
                 printWithLine("Oi dont troll");
                 continue;
-            }
-
-            if (count >= MAX_TASKS) {
-                printWithLine("Storage is full, terminating");
-                break;
             }
 
             //Bye
@@ -91,12 +95,13 @@ public class SigmaBoy {
 
             //List
             if (userInput.equals("list")) {
-                if (count == 0) {
+                if (tasks.isEmpty()) {
                     printWithLine("No items in list yet");
                 } else {
-                    for (int i = 0; i < count; i++) {
-                        printWithLine((i + 1) + ". " + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + ". " + tasks.get(i));
                     }
+                    printLine();
                 }
                 continue;
             }
@@ -109,10 +114,10 @@ public class SigmaBoy {
                 try {
                     int taskNum = Integer.parseInt(userInput.substring(prefixLength).trim());
 
-                    if (taskNum < 1 || taskNum > count) {
+                    if (taskNum < 1 || taskNum > tasks.size()) {
                         throw new SigmaBoyException(OUT_OF_RANGE_ERROR);
                     } else {
-                        Task taskToMark = tasks[taskNum - 1];
+                        Task taskToMark = tasks.get(taskNum - 1);
                         if (isMark) {
                             taskToMark.markAsDone();
                         } else {
@@ -128,8 +133,33 @@ public class SigmaBoy {
                 continue;
             }
 
-            //sigmaboy.task.Todo
+            //Delete
+            if (userInput.startsWith("delete")) {
+                try {
+                    int taskNum = Integer.parseInt(userInput.substring(DELETE_PREFIX).trim());
+
+                    if (taskNum < 1 || taskNum > tasks.size()) {
+                        throw new SigmaBoyException(OUT_OF_RANGE_ERROR);
+                    } else {
+                        Task removedTask = tasks.remove(taskNum - 1);
+                        printDeleteTask(removedTask, tasks.size());
+                    }
+                } catch (NumberFormatException e) {
+                    printWithLine(INVALID_INDEX_ERROR);
+                } catch (SigmaBoyException e) {
+                    printWithLine(e.getMessage());
+                }
+                continue;
+            }
+
+            //Todo
             if (userInput.startsWith("todo")) {
+
+                if (tasks.size() >= MAX_TASKS) {
+                    printWithLine("Storage is full, terminating");
+                    continue;
+                }
+
                 try {
                     String description = userInput.substring(TODO_PREFIX).trim();
 
@@ -137,9 +167,9 @@ public class SigmaBoy {
                         throw new SigmaBoyException(EMPTY_STATEMENT_ERROR);
                     }
 
-                    Todo todo = new Todo(description);
-                    tasks[count++] = todo;
-                    printAddedTask(todo, count);
+                    Todo toDo = new Todo(description);
+                    tasks.add(toDo);
+                    printAddedTask(toDo, tasks.size());
 
                 } catch(SigmaBoyException e) {
                     printWithLine(e.getMessage());
@@ -147,8 +177,14 @@ public class SigmaBoy {
                 continue;
             }
 
-            //sigmaboy.task.Deadline
+            //Deadline
             if (userInput.startsWith("deadline")) {
+
+                if (tasks.size() >= MAX_TASKS) {
+                    printWithLine("Storage is full, terminating");
+                    continue;
+                }
+
                 try {
                     String rest = userInput.substring(DEADLINE_PREFIX).trim();
                     String[] parts = rest.split(" /by ");
@@ -162,8 +198,8 @@ public class SigmaBoy {
                     }
 
                     Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
-                    tasks[count++] = deadline;
-                    printAddedTask(deadline, count);
+                    tasks.add(deadline);
+                    printAddedTask(deadline, tasks.size());
 
                 } catch (SigmaBoyException e) {
                     printWithLine(e.getMessage());
@@ -171,8 +207,14 @@ public class SigmaBoy {
                 continue;
             }
 
-            //sigmaboy.task.Event
+            //Event
             if (userInput.startsWith("event")) {
+
+                if (tasks.size() >= MAX_TASKS) {
+                    printWithLine("Storage is full, terminating");
+                    continue;
+                }
+
                 try {
                     String rest = userInput.substring(EVENT_PREFIX).trim();
                     String[] parts = rest.split(" /from | /to ");
@@ -186,8 +228,8 @@ public class SigmaBoy {
                     }
 
                     Event event = new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
-                    tasks[count++] = event;
-                    printAddedTask(event, count);
+                    tasks.add(event);
+                    printAddedTask(event, tasks.size());
                     continue;
 
                 } catch (SigmaBoyException e) {

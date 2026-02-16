@@ -43,23 +43,29 @@ ____________________________________________________________
 Out of range, choose another index
 ____________________________________________________________
 
-Ok! I've marked this task as not done yet:
+Noted. Ive removed this task:
 [T][ ]Buy groceries
+Now you have 3 tasks in the list.
+____________________________________________________________
+
+Noted. Ive removed this task:
+[D][ ]Submit assignment (by: 2026-02-10)
+Now you have 2 tasks in the list.
+____________________________________________________________
+
+1. [T][X]Finish homework
+2. [E][ ]Team meeting (from: 10:00 to: 12:00)
+____________________________________________________________
+
+Ok! I've marked this task as not done yet:
+[T][ ]Finish homework
 ____________________________________________________________
 
 Oi dont troll, choose an appropriate index
 ____________________________________________________________
 
-1. [T][ ]Buy groceries
-____________________________________________________________
-
-2. [T][X]Finish homework
-____________________________________________________________
-
-3. [D][ ]Submit assignment (by: 2026-02-10)
-____________________________________________________________
-
-4. [E][ ]Team meeting (from: 10:00 to: 12:00)
+1. [T][ ]Finish homework
+2. [E][ ]Team meeting (from: 10:00 to: 12:00)
 ____________________________________________________________
 
 Bye. Hope to see you again soon!
