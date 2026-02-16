@@ -1,0 +1,2 @@
+T | 0 | Finish homework
+E | 0 | Team meeting | 10:00 | 12:00

@@ -4,6 +4,9 @@ import SigmaBoy.task.*;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class SigmaBoy {
     //Constants
@@ -39,6 +42,8 @@ public class SigmaBoy {
     private static final String OUT_OF_RANGE_ERROR =
             "Out of range, choose another index";
 
+    private static final String FILE_PATH = "data/SigmaBoy.txt";
+
     //Helper Functions
     private static void printLine(){
         System.out.println(LINE);
@@ -70,13 +75,87 @@ public class SigmaBoy {
         }
     }
 
+    //Save task
+    private static void saveTasks(ArrayList<Task> tasks) {
+        try {
+            File folder = new File("data");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            FileWriter writer = new FileWriter(FILE_PATH);
+
+            for (Task t : tasks) {
+                String type = "";
+                String extra = "";
+                String done = t.isDone() ? "1" : "0";
+
+                if (t instanceof Todo) {
+                    type = "T";
+                } else if (t instanceof Deadline) {
+                    type = "D";
+                    Deadline d = (Deadline) t;
+                    extra = " | " + d.getBy();
+                } else if (t instanceof Event) {
+                    type = "E";
+                    Event e = (Event) t;
+                    extra = " | " + e.getFrom() + " | " + e.getTo();
+                }
+
+                writer.write(type + " | " + done + " | " + t.getDescription() + extra + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving: " + e.getMessage());
+        }
+    }
+
+    //Load task
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        File file = new File(FILE_PATH);
+
+        if (!file.exists()) {
+            return tasks;
+        }
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(" \\| ");
+
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String desc = parts[2];
+
+                if (type.equals("T")) {
+                    Todo t = new Todo(desc);
+                    if (isDone) t.markAsDone();
+                    tasks.add(t);
+                } else if (type.equals("D")) {
+                    Deadline d = new Deadline(desc, parts[3]);
+                    if (isDone) d.markAsDone();
+                    tasks.add(d);
+                } else if (type.equals("E")) {
+                    Event e = new Event(desc, parts[3], parts[4]);
+                    if (isDone) e.markAsDone();
+                    tasks.add(e);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading: " + e.getMessage());
+        }
+        return tasks;
+    }
+
     //Main
     public static void main(String[] args) {
         printLine();
         printWithLine(HI);
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
 
         while (scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
@@ -123,6 +202,7 @@ public class SigmaBoy {
                         } else {
                             taskToMark.markAsNotDone();
                         }
+                        saveTasks(tasks);
                         printMarkStatus(taskToMark, isMark);
                     }
                 } catch(NumberFormatException e) {
@@ -142,6 +222,7 @@ public class SigmaBoy {
                         throw new SigmaBoyException(OUT_OF_RANGE_ERROR);
                     } else {
                         Task removedTask = tasks.remove(taskNum - 1);
+                        saveTasks(tasks);
                         printDeleteTask(removedTask, tasks.size());
                     }
                 } catch (NumberFormatException e) {
@@ -169,6 +250,7 @@ public class SigmaBoy {
 
                     Todo toDo = new Todo(description);
                     tasks.add(toDo);
+                    saveTasks(tasks);
                     printAddedTask(toDo, tasks.size());
 
                 } catch(SigmaBoyException e) {
@@ -199,6 +281,7 @@ public class SigmaBoy {
 
                     Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
                     tasks.add(deadline);
+                    saveTasks(tasks);
                     printAddedTask(deadline, tasks.size());
 
                 } catch (SigmaBoyException e) {
@@ -229,6 +312,7 @@ public class SigmaBoy {
 
                     Event event = new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
                     tasks.add(event);
+                    saveTasks(tasks);
                     printAddedTask(event, tasks.size());
                     continue;
 
