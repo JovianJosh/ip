@@ -43,12 +43,12 @@ ____________________________________________________________
 Out of range, choose another index
 ____________________________________________________________
 
-Noted. Ive removed this task:
+Noted. I've removed this task:
 [T][ ]Buy groceries
 Now you have 3 tasks in the list.
 ____________________________________________________________
 
-Noted. Ive removed this task:
+Noted. I've removed this task:
 [D][ ]Submit assignment (by: 2026-02-10)
 Now you have 2 tasks in the list.
 ____________________________________________________________
