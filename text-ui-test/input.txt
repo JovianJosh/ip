@@ -14,4 +14,7 @@ list
 unmark 1
 mark
 list
+find groceries
+find book
+find meeting
 bye
