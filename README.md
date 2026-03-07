@@ -11,6 +11,7 @@ SigmaBoy is a desktop app for managing tasks, optimized for use via a Command Li
 3. Copy the file to the folder you want to use as the home folder for SigmaBoy.
 4. Open a command terminal and `cd` into the folder you put the jar file in.
 5. Run the command `java -jar SigmaBoy.jar` to start the app.
+6. Enjoy the app!
 
 ---
 
