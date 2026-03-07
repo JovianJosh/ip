@@ -7,13 +7,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Represents the storage handler for SigmaBoy task manager.
+ * A <code>Storage</code> object corresponds to file operations
+ * that load tasks from and save tasks to a specified file.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a Storage instance with the specified file path.
+     *
+     * @param filePath The path to the file where tasks are stored.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return ArrayList of tasks loaded from the file.
+     * @throws SigmaBoyException If there is an error reading the file.
+     */
     public ArrayList<Task> load() throws SigmaBoyException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -51,6 +67,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves tasks to the storage file.
+     *
+     * @param tasks The list of tasks to save.
+     * @throws SigmaBoyException If there is an error writing to the file.
+     */
     public void save(ArrayList<Task> tasks) throws SigmaBoyException {
         try {
             File folder = new File("data");
