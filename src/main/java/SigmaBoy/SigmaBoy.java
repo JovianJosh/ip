@@ -1,6 +1,7 @@
 package SigmaBoy;
 
 import SigmaBoy.task.*;
+import java.util.ArrayList;
 
 public class SigmaBoy {
     private Storage storage;
@@ -68,6 +69,10 @@ public class SigmaBoy {
                         handleEventCommand(userInput);
                         break;
 
+                    case Parser.COMMAND_FIND:
+                        handleFindCommand(userInput);
+                        break;
+
                     default:
                         ui.showError("Unknown command: " + command);
                 }
@@ -120,6 +125,12 @@ public class SigmaBoy {
         tasks.add(event);
         storage.save(tasks.getTasks());
         ui.showTaskAdded(event, tasks.size());
+    }
+
+    private void handleFindCommand(String userInput) throws SigmaBoyException {
+        String keyword = Parser.parseFind(userInput);
+        java.util.ArrayList<Task> matchingTasks = tasks.findTasks(keyword);
+        ui.showFindResults(matchingTasks, keyword);
     }
 
     public static void main(String[] args) {

@@ -10,6 +10,7 @@ public class Parser {
     public static final String COMMAND_TODO = "todo";
     public static final String COMMAND_DEADLINE = "deadline";
     public static final String COMMAND_EVENT = "event";
+    public static final String COMMAND_FIND = "find";
 
     // Error messages
     private static final String EVENT_FORMAT_ERROR =
@@ -62,6 +63,14 @@ public class Parser {
         }
 
         return new String[]{parts[0].trim(), parts[1].trim(), parts[2].trim()};
+    }
+
+    public static String parseFind(String userInput) throws SigmaBoyException {
+        String keyword = userInput.substring(COMMAND_FIND.length()).trim();
+        if (keyword.isEmpty()) {
+            throw new SigmaBoyException(EMPTY_STATEMENT_ERROR);
+        }
+        return keyword;
     }
 
 }

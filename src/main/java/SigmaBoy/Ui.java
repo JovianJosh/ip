@@ -2,6 +2,7 @@ package SigmaBoy;
 
 import SigmaBoy.task.Task;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Ui {
     private static final String LINE =
@@ -59,12 +60,24 @@ public class Ui {
         }
     }
 
-    public void showTaskList(java.util.ArrayList<Task> tasks) {
+    public void showTaskList(ArrayList<Task> tasks) {
         if (tasks.isEmpty()) {
             showMessage("No items in list yet");
         } else {
             for (int i = 0; i < tasks.size(); i++) {
                 System.out.println((i + 1) + ". " + tasks.get(i));
+            }
+            showLine();
+        }
+    }
+
+    public void showFindResults(ArrayList<Task> matchingTasks, String keyword) {
+        if (matchingTasks.isEmpty()) {
+            showMessage("No tasks found matching: " + keyword);
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println((i + 1) + ". " + matchingTasks.get(i));
             }
             showLine();
         }
